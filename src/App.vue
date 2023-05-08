@@ -1,28 +1,69 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  
+  <v-app>
+   
+    <all-user ref="listUser" @edit-user="openUserUpdate"></all-user>
+    <add-user></add-user>
+    
+    <v-btn icon outlined style="position: fixed; right: 50px; bottom: 50px; background-color: blue;" class="btn" color="primary"
+     @click="$store.state.isAddUserDialogOpen = true">+
+      
+    </v-btn>
+   
+    
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import addUser from './components/addUser.vue';
+import allUser from './components/allUser.vue';
 
+import { mapActions } from "vuex";
 export default {
   name: 'App',
+
   components: {
-    HelloWorld
-  }
-}
+    addUser: addUser,
+    allUser: allUser
+  },
+  
+
+  methods: {
+   ...mapActions('users', ['addUser']),
+    async onUserAdded(user) {
+      await this.addUser(user);
+      this.$refs.listUser.refresh();
+      this.isUserAdded = true;
+    },
+    // onUserAdded() {
+    //   this.$refs.listUser.refresh()
+    //   this.isUserAdded = true;
+    // },
+    openUserUpdate(u){
+      console.log("ok")
+      this.currentUser =u;
+      this.isAddUserDialogOpen =true;
+    }
+  },
+
+  data: () => ({
+    isAddUserDialogOpen: false,
+    
+    addUserModal: null,
+    isUserAdded: false,
+    
+
+    currentUser:{
+      id :0
+
+    }
+    
+  }),
+
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
+
 </style>
